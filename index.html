@@ -3,31 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Programación</title>
+    <title>Programación Deportiva</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
-        <h1>Programación</h1>
+        <h1>PROGRAMACIÓN</h1>
         <div class="controles">
             <button onclick="cargarDatos()">🔄</button>
             <button onclick="toggleDarkMode()">🌙</button>
-            <button onclick="generarQR()">📱</button>
         </div>
     </header>
 
     <main>
-        <section id="ahora"><h2>📺 EN VIVO</h2><div class="lista"></div></section>
-        <section id="hoy"><h2>📅 HOY</h2><div class="lista"></div></section>
-        <section id="proximos"><h2>🚀 SIGUIENTES</h2><div class="lista"></div></section>
+        <section id="ahora"><h2>EN VIVO</h2><div class="lista"></div></section>
+        <section id="hoy"><h2>HOY</h2><div class="lista"></div></section>
+        <section id="proximos"><h2>PRÓXIMOS EVENTOS</h2><div class="lista"></div></section>
     </main>
 
-    <div id="qr-modal" class="modal" onclick="this.style.display='none'">
-        <div id="qr-code"></div>
-    </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
