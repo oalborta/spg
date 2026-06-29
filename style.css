@@ -1,29 +1,14 @@
-/* Estilos generales */
-body { font-family: sans-serif; padding: 15px; background: #f0f2f5; }
-h1 { text-align: center; color: #1a73e8; }
-h2 { font-size: 1.2rem; margin-top: 20px; }
+:root { --bg: #f0f2f5; --text: #333; --card: #fff; }
+body.dark { --bg: #121212; --text: #e0e0e0; --card: #1e1e1e; }
 
-/* Estilo del contenedor del evento */
-.evento { 
-    background: white; 
-    padding: 10px; 
-    margin-bottom: 8px; 
-    border-radius: 8px; 
-    display: flex; 
-    align-items: center; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-    border-bottom: 1px solid #eee; /* Combinamos lo mejor de ambos */
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding-top: 70px; }
+
+.navbar { 
+    position: fixed; top: 0; width: 100%; height: 60px; background: #1a73e8; 
+    display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 100;
 }
 
-/* Estilo del logo */
-.logo { 
-    width: 40px; 
-    height: 40px; 
-    object-fit: contain; 
-    margin-right: 15px; 
-}
+.evento { background: var(--card); padding: 15px; margin: 10px; border-radius: 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+#ahora .evento { border-left: 5px solid #ff4444; }
 
-/* Destacado para el evento en vivo */
-#ahora .evento { 
-    border-left: 5px solid red; 
-}
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; display: flex; justify-content: center; align-items: center; }
