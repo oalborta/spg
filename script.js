@@ -1,14 +1,32 @@
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
+
+const logos = {
+    "ESPN": "https://upload.wikimedia.org/wikipedia/commons/e/e3/ESPN.svg",
+    "Fox Sports": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Fox_Sports_logo.svg"
+};
+
+function cargarDatos() {
+    Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        complete: function(results) {
+            clasificarEventos(results.data);
+        }
+    });
+}
+
 function clasificarEventos(eventos) {
+    // 1. Limpiamos los contenedores antes de rellenar
+    const contenedores = document.querySelectorAll('.lista');
+    contenedores.forEach(c => c.innerHTML = '');
+
     const ahora = new Date();
     const hoyStr = ahora.toISOString().split('T')[0]; 
-    
-    // Convertimos la hora actual a minutos para comparar fácilmente
     const horaActualMinutos = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
         if (!ev.Evento) return;
 
-        // Convertimos Hora_Inicio y Hora_Fin a minutos
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMinutos = hI * 60 + mI;
@@ -17,9 +35,8 @@ function clasificarEventos(eventos) {
         const div = document.createElement('div');
         div.className = 'evento';
         div.innerHTML = `<img src="${logos[ev.Canal] || ''}" class="logo"> 
-                         <strong>${ev.Evento}</strong><br><small>${ev.Hora_Inicio} - ${ev.Canal}</small>`;
+                         <div><strong>${ev.Evento}</strong><br><small>${ev.Hora_Inicio} - ${ev.Canal}</small></div>`;
 
-        // Lógica de filtrado con minutos
         if (ev.Fecha === hoyStr) {
             if (horaActualMinutos >= inicioMinutos && horaActualMinutos <= finMinutos) {
                 document.querySelector('#ahora .lista').appendChild(div);
@@ -31,3 +48,9 @@ function clasificarEventos(eventos) {
         }
     });
 }
+
+// Carga inicial
+cargarDatos();
+
+// Refresco automático cada 60 segundos (60000 milisegundos)
+setInterval(cargarDatos, 60000);
