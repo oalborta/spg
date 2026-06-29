@@ -1,24 +1,18 @@
-:root { --bg: #f0f2f5; --text: #333; --card: #fff; }
-body.dark { --bg: #121212; --text: #e0e0e0; --card: #1e1e1e; }
-
-body { font-family: sans-serif; background: var(--bg); color: var(--text); padding-top: 70px; margin: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; padding-top: 80px; color: #333; }
 
 .navbar { 
-    position: fixed; top: 0; width: 100%; height: 60px; background: #1a73e8; 
-    display: flex; justify-content: space-between; align-items: center; padding: 0 15px; 
-    box-sizing: border-box; color: white; z-index: 100;
+    position: fixed; top: 0; width: 100%; height: 65px; background: #ffffff; 
+    display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
+    box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100;
 }
+.navbar h1 { font-size: 1rem; color: #1a73e8; margin: 0; letter-spacing: 0.5px; }
 
-h2 { font-size: 0.9rem; margin: 20px 15px 10px 15px; text-transform: uppercase; letter-spacing: 1px; color: #777; }
+.bloque { margin: 20px 15px 30px 15px; background: #fff; border-radius: 15px; padding: 15px; border: 1px solid #ececec; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+h2 { font-size: 0.8rem; margin: 0 0 15px 0; color: #888; text-transform: uppercase; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
 
-.evento { 
-    background: var(--card); padding: 15px; margin: 10px; border-radius: 12px; 
-    display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-    border-bottom: 1px solid #eee;
-}
+.evento { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
+.evento:last-child { border-bottom: none; }
 
-#ahora .evento { border-left: 5px solid #ff4444; }
-
-.logo { width: 40px; height: 40px; object-fit: contain; margin-right: 15px; }
-
-.controles button { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+.logo { width: 35px; height: 35px; object-fit: contain; margin-right: 15px; }
+.btn-refresh { background: #1a73e8; color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
+#ahora .evento { border-left: 4px solid #ff4444; padding-left: 10px; }
