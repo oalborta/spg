@@ -1,18 +1,26 @@
-// Aquí asocias cada canal con su logo
-const logosCanales = {
-    "ESPN": "url_de_tu_logo_espn.png",
-    "Fox Sports": "url_de_tu_logo_fox.png"
-    // Agrega aquí tus otros 8 canales
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
+
+// Diccionario de logos (Agrega aquí tus canales)
+const logos = {
+    "ESPN": "https://upload.wikimedia.org/wikipedia/commons/e/e3/ESPN.svg",
+    "Fox Sports": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Fox_Sports_logo.svg"
 };
 
-// Esta es la parte que "lee" tu Google Sheet (cuando lo publiques como CSV)
-const csvUrl = 'TU_URL_DE_GOOGLE_SHEET_PUBLICADO_COMO_CSV';
-
-async function cargarEventos() {
-    const respuesta = await fetch(csvUrl);
-    const texto = await respuesta.text();
-    // Aquí iría la lógica para procesar el CSV y mostrarlo en las cajas (ahora/hoy/proximos)
-    console.log("Datos cargados");
+function cargarDatos() {
+    Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        complete: function(results) {
+            procesarEventos(results.data);
+        }
+    });
 }
 
-cargarEventos();
+function procesarEventos(eventos) {
+    const ahora = new Date();
+    // Aquí el script comparará la hora del sistema con tu hoja y los pondrá en su lugar
+    console.log("Eventos leídos:", eventos);
+    // (En la siguiente fase conectamos los bloques HTML)
+}
+
+cargarDatos();
