@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi Programación Deportiva</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Programación Deportiva</h1>
+    <div id="ahora"><h2>En Vivo Ahora</h2><div class="lista"></div></div>
+    <div id="hoy"><h2>Resto de Hoy</h2><div class="lista"></div></div>
+    <div id="proximos"><h2>Próximos Eventos</h2><div class="lista"></div></div>
+    <script src="script.js"></script>
+</body>
+</html>
