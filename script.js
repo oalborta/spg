@@ -1,47 +1,33 @@
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
-
-const logos = {
-    "ESPN": "https://upload.wikimedia.org/wikipedia/commons/e/e3/ESPN.svg",
-    "Fox Sports": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Fox_Sports_logo.svg"
-    // Agrega aquí otros canales que uses
-};
-
-async function cargarDatos() {
-    const respuesta = await fetch(CSV_URL);
-    const datos = await respuesta.text();
-    
-    Papa.parse(datos, {
-        header: true,
-        complete: function(results) {
-            clasificarEventos(results.data);
-        }
-    });
-}
-
 function clasificarEventos(eventos) {
     const ahora = new Date();
-    const hoyStr = ahora.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-
-    const contenedorAhora = document.querySelector('#ahora .lista');
-    const contenedorHoy = document.querySelector('#hoy .lista');
-    const contenedorProx = document.querySelector('#proximos .lista');
+    const hoyStr = ahora.toISOString().split('T')[0]; 
+    
+    // Convertimos la hora actual a minutos para comparar fácilmente
+    const horaActualMinutos = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
-        if (!ev.Evento) return; // Salta filas vacías
+        if (!ev.Evento) return;
+
+        // Convertimos Hora_Inicio y Hora_Fin a minutos
+        const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
+        const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
+        const inicioMinutos = hI * 60 + mI;
+        const finMinutos = hF * 60 + mF;
 
         const div = document.createElement('div');
         div.className = 'evento';
         div.innerHTML = `<img src="${logos[ev.Canal] || ''}" class="logo"> 
-                         <strong>${ev.Evento}</strong> - ${ev.Hora_Inicio} (${ev.Canal})`;
+                         <strong>${ev.Evento}</strong><br><small>${ev.Hora_Inicio} - ${ev.Canal}</small>`;
 
-        // Lógica simple de comparación
+        // Lógica de filtrado con minutos
         if (ev.Fecha === hoyStr) {
-            // Aquí se podría añadir lógica de comparación de hora más precisa
-            contenedorHoy.appendChild(div);
+            if (horaActualMinutos >= inicioMinutos && horaActualMinutos <= finMinutos) {
+                document.querySelector('#ahora .lista').appendChild(div);
+            } else {
+                document.querySelector('#hoy .lista').appendChild(div);
+            }
         } else if (ev.Fecha > hoyStr) {
-            contenedorProx.appendChild(div);
+            document.querySelector('#proximos .lista').appendChild(div);
         }
     });
 }
-
-cargarDatos();
