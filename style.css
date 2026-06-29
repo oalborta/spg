@@ -1,17 +1,19 @@
-body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; padding-top: 80px; color: #333; }
+body { font-family: sans-serif; background: #f8f9fa; margin: 0; padding-top: 80px; color: #333; }
 
 .navbar { 
-    position: fixed; top: 0; width: 100%; height: 65px; background: #ffffff; 
-    display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
-    box-sizing: border-box; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100;
+    position: fixed; top: 0; width: 100%; height: 70px; background: #fff; 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 0 15px; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100;
 }
-.navbar { 
-    position: fixed; top: 0; width: 100%; height: 70px; background: #ffffff; 
-    display: flex; justify-content: space-between; align-items: center; padding: 0 15px; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100;
-}
-.btn-group { display: flex; gap: 10px; } /* Esto separa los botones */
-.btn-text { background: transparent; border: 1px solid #1a73e8; color: #1a73e8; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; margin-left: 5px; }
-.btn-recordar { background: #1a73e8; color: white; border: none; border-radius: 4px; padding: 6px 12px; font-size: 0.7rem; cursor: pointer; white-space: nowrap; }
+.btn-group { display: flex; gap: 8px; }
+
+h1 { font-size: 0.9rem; color: #1a73e8; margin: 0; }
+.bloque { margin: 15px; background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+h2 { font-size: 0.7rem; color: #888; text-transform: uppercase; margin: 0 0 10px 0; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
+
+.evento { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+.logo { width: 35px; height: 35px; object-fit: contain; margin-right: 12px; }
+.btn-text { background: #1a73e8; border: none; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
+.btn-recordar { background: #e0e0e0; color: #333; border: none; border-radius: 4px; padding: 6px 10px; font-size: 0.7rem; cursor: pointer; }
 
 #ahora .evento { border-left: 4px solid #ff4444; padding-left: 10px; }
