@@ -1,8 +1,15 @@
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv'; 
 
 const logos = {
-    "ESPN": "https://upload.wikimedia.org/wikipedia/commons/e/e3/ESPN.svg",
-    "Fox Sports": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Fox_Sports_logo.svg"
+    "ESPN": "https://github.com/oalborta/spg/blob/main/espn.png?raw=true",
+    "ESPN 2": "https://github.com/oalborta/spg/blob/main/espn2.png?raw=true",
+    "ESPN 3": "https://github.com/oalborta/spg/blob/main/espn3.png?raw=true",
+    "ESPN 4": "https://github.com/oalborta/spg/blob/main/espn4.png?raw=true",
+    "ESPN 5": "https://github.com/oalborta/spg/blob/main/espn5.png?raw=true",
+    "ESPN 6": "https://github.com/oalborta/spg/blob/main/espn6.png?raw=true",
+    "ESPN 7": "https://github.com/oalborta/spg/blob/main/espn7.png?raw=true",
+    "TS 1": "https://github.com/oalborta/spg/blob/main/ts1.png?raw=true",
+    "TS 2": "https://github.com/oalborta/spg/blob/main/ts2.png?raw=true"
 };
 
 function cargarDatos() {
