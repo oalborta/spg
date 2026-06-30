@@ -11,6 +11,38 @@ const logos = {
     "TS 1": "https://raw.githubusercontent.com/oalborta/spg/main/ts1.png",
     "TS 2": "https://raw.githubusercontent.com/oalborta/spg/main/ts2.png"
 };
+// ... (arriba mantienes tu diccionario 'logos' para canales)
+
+// Nuevo diccionario para logos de Torneos
+const logosTorneo = {
+    "MUNDIAL": "https://github.com/oalborta/spg/blob/main/fifa.png?raw=true",
+    "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
+    // Agrega aquí todos los que necesites
+};
+
+// ... (dentro de clasificarEventos, en el bucle forEach)
+
+// 1. Lógica para Canal
+let canalDisplay = logos[ev.Canal] 
+    ? `<img src="${logos[ev.Canal]}" class="logo">` 
+    : `<span class="badge-canal">${ev.Canal}</span>`;
+
+// 2. Lógica para Torneo (Nueva columna)
+let torneoDisplay = logosTorneo[ev.Torneo] 
+    ? `<img src="${logosTorneo[ev.Torneo]}" class="logo-torneo">` 
+    : `<span class="badge-torneo">${ev.Torneo}</span>`;
+
+// Construcción del HTML
+div.innerHTML = `
+    <div class="column-left">${canalDisplay}</div>
+    <div style="flex-grow:1;">
+        <strong>${ev.Evento}</strong><br>
+        <small>${ev.Torneo || ''}</small><br>
+        <small>${ev.Fecha} | ${ev.Hora_Inicio}</small>
+    </div>
+    <div class="column-right">${torneoDisplay}</div>
+    <button class="btn-recordar" onclick="descargarRecordatorio(...)">Recordar</button>
+`;
 
 function cargarDatos() {
     const btn = document.getElementById('btnRecargar');
