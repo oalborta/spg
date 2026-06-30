@@ -102,6 +102,17 @@ END:VCALENDAR`;
     link.download = 'evento.ics';
     link.click();
 }
-
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('btnInstalar');
+  if(btn) {
+      btn.style.display = 'block';
+      btn.addEventListener('click', () => {
+          deferredPrompt.prompt();
+      });
+  }
+});
 cargarDatos();
 setInterval(cargarDatos, 60000);
