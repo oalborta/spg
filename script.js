@@ -34,11 +34,9 @@ function clasificarEventos(eventos) {
     eventos.forEach(ev => {
         if (!ev.Evento || !ev.Fecha) return;
 
-        // Normalización inteligente de fechas (soporta AAAA-MM-DD y DD/MM/AAAA)
+        // Convertir fecha del Sheet a timestamp
         let fPartes = ev.Fecha.includes('/') ? ev.Fecha.split('/') : ev.Fecha.split('-');
-        let fechaObj = ev.Fecha.includes('/') ? 
-                       new Date(fPartes[2], fPartes[1] - 1, fPartes[0]) : 
-                       new Date(fPartes[0], fPartes[1] - 1, fPartes[2]);
+        let fechaObj = ev.Fecha.includes('/') ? new Date(fPartes[2], fPartes[1] - 1, fPartes[0]) : new Date(fPartes[0], fPartes[1] - 1, fPartes[2]);
         const fechaTimestamp = fechaObj.getTime();
 
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
@@ -46,9 +44,11 @@ function clasificarEventos(eventos) {
         const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
 
+        // OMITIR si el evento ya terminó (basado en la hora)
+        if (fechaTimestamp === hoyTimestamp && minutosAhora > finMin) return;
+
         const div = document.createElement('div');
         div.className = 'evento';
-        
         let imgTag = logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo" onerror="this.style.display='none'">` : '';
 
         div.innerHTML = `${imgTag}
@@ -66,7 +66,6 @@ function clasificarEventos(eventos) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
-}
 
 function compartirApp() {
     const url = window.location.href;
