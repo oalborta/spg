@@ -13,20 +13,20 @@ const logos = {
 };
 
 function cargarDatos() {
-    const btn = document.querySelector('button[onclick="cargarDatos()"]');
-    if(btn) btn.innerText = "Actualizando...";
+    const btn = document.getElementById('btnRecargar');
+    if (btn) btn.innerText = "Actualizando...";
+    
     Papa.parse(CSV_URL, { 
         download: true, header: true, 
         complete: (res) => {
             clasificarEventos(res.data);
-            if(btn) btn.innerText = "Recargar";
+            if (btn) btn.innerText = "Recargar";
         } 
     });
 }
 
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
-    
     const ahora = new Date();
     const hoyTimestamp = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()).getTime();
     const minutosAhora = ahora.getHours() * 60 + ahora.getMinutes();
@@ -34,7 +34,6 @@ function clasificarEventos(eventos) {
     eventos.forEach(ev => {
         if (!ev.Evento || !ev.Fecha) return;
 
-        // Convertir fecha del Sheet a timestamp
         let fPartes = ev.Fecha.includes('/') ? ev.Fecha.split('/') : ev.Fecha.split('-');
         let fechaObj = ev.Fecha.includes('/') ? new Date(fPartes[2], fPartes[1] - 1, fPartes[0]) : new Date(fPartes[0], fPartes[1] - 1, fPartes[2]);
         const fechaTimestamp = fechaObj.getTime();
@@ -44,7 +43,6 @@ function clasificarEventos(eventos) {
         const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
 
-        // OMITIR si el evento ya terminó (basado en la hora)
         if (fechaTimestamp === hoyTimestamp && minutosAhora > finMin) return;
 
         const div = document.createElement('div');
@@ -52,25 +50,22 @@ function clasificarEventos(eventos) {
         let imgTag = logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo" onerror="this.style.display='none'">` : '';
 
         div.innerHTML = `${imgTag}
-                         <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br>
-                         <small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
-                         <button class="btn-recordar" onclick="descargarRecordatorio('${ev.Evento}', '${ev.Fecha}', '${ev.Hora_Inicio}')">Recordar</button>`;
+            <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br><small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
+            <button class="btn-recordar" onclick="descargarRecordatorio('${ev.Evento}', '${ev.Fecha}', '${ev.Hora_Inicio}')">Recordar</button>`;
 
         if (fechaTimestamp === hoyTimestamp) {
-            if (minutosAhora >= inicioMin && minutosAhora <= finMin) {
-                document.querySelector('#ahora .lista').appendChild(div);
-            } else {
-                document.querySelector('#hoy .lista').appendChild(div);
-            }
+            if (minutosAhora >= inicioMin && minutosAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
+            else document.querySelector('#hoy .lista').appendChild(div);
         } else if (fechaTimestamp > hoyTimestamp) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
+}
 
 function compartirApp() {
     const url = window.location.href;
     if (navigator.share) {
-        navigator.share({ title: 'Programación Deportiva', url: url });
+        navigator.share({ title: 'Programación', url: url });
     } else {
         navigator.clipboard.writeText(url).then(() => alert("Enlace copiado al portapapeles."));
     }
@@ -79,39 +74,12 @@ function compartirApp() {
 function descargarRecordatorio(evento, fecha, hora) {
     const fechaISO = fecha.replace(/-/g, '').replace(/\//g, '');
     const horaISO = hora.replace(/:/g, '') + '00';
-    const timestamp = fechaISO + 'T' + horaISO;
-
-    const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:${evento}
-DTSTART:${timestamp}
-DESCRIPTION:Alerta 15 min antes del evento.
-BEGIN:VALARM
-TRIGGER:-PT15M
-ACTION:DISPLAY
-DESCRIPTION:Recordatorio: ${evento} empieza pronto.
-END:VALARM
-END:VEVENT
-END:VCALENDAR`;
-
+    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${evento}\nDTSTART:${fechaISO}T${horaISO}\nBEGIN:VALARM\nTRIGGER:-PT15M\nACTION:DISPLAY\nDESCRIPTION:Recordatorio: ${evento}\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([icsContent], { type: 'text/calendar' });
     const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
+    link.href = URL.createObjectURL(blob);
     link.download = 'evento.ics';
     link.click();
 }
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById('btnInstalar');
-  if(btn) {
-      btn.style.display = 'block';
-      btn.addEventListener('click', () => {
-          deferredPrompt.prompt();
-      });
-  }
-});
+
 cargarDatos();
-setInterval(cargarDatos, 60000);
