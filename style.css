@@ -1,8 +1,8 @@
 body { font-family: sans-serif; background: #f8f9fa; margin: 0; padding-top: 80px; }
-.navbar { position: fixed; top: 0; width: 100%; height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; }
-.btn-group { display: flex; gap: 8px; }
-.bloque { margin: 15px; background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-.evento { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f9f9f9; gap: 10px; }
-.logo { width: 40px !important; height: 40px !important; object-fit: contain; }
-.btn-text { background: #1a73e8; border: none; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
-.btn-recordar { background: #e0e0e0; color: #333; border: none; border-radius: 4px; padding: 6px 10px; font-size: 0.7rem; cursor: pointer; }
+.navbar { position: fixed; top: 0; width: 100%; height: 60px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; }
+.bloque { margin: 15px; background: #fff; border-radius: 10px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+h2 { font-size: 0.7rem; color: #888; text-transform: uppercase; margin: 5px 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+.evento { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f9f9f9; gap: 10px; }
+.logo { width: 35px !important; height: 35px !important; object-fit: contain; }
+.btn-text { background: #1a73e8; border: none; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
+.btn-recordar { background: #eee; border: none; padding: 5px 8px; border-radius: 4px; font-size: 0.7rem; }
