@@ -49,24 +49,29 @@ function cargarDatos() {
     if (btn) btn.innerText = "Actualizando...";
     
     Papa.parse(CSV_URL, { 
-        download: true, header: true, 
-        complete: (res) => {
-            // AQUÍ ESTÁ EL AJUSTE: Ordenamos los datos antes de clasificarlos
-            const datosOrdenados = res.data.sort((a, b) => {
-                // Convertimos fechas a números para comparar
-                const fechaA = new Date(a.Fecha.split('/').reverse().join('-')).getTime();
-                const fechaB = new Date(b.Fecha.split('/').reverse().join('-')).getTime();
-                
-                if (fechaA !== fechaB) return fechaA - fechaB;
-                // Si la fecha es la misma, ordenamos por hora
-                return a.Hora_Inicio.localeCompare(b.Hora_Inicio);
-            });
+    download: true, header: true, 
+    complete: (res) => {
+        const datosOrdenados = res.data.sort((a, b) => {
+            // 1. Convertir fechas a timestamp
+            const fechaA = new Date(a.Fecha.split('/').reverse().join('-')).getTime();
+            const fechaB = new Date(b.Fecha.split('/').reverse().join('-')).getTime();
             
-            clasificarEventos(datosOrdenados);
-            if (btn) btn.innerText = "Recargar";
-        } 
-    });
-}
+            // 2. Si las fechas son distintas, ordenamos por fecha
+            if (fechaA !== fechaB) return fechaA - fechaB;
+            
+            // 3. Si la fecha es igual, convertimos hora a minutos para comparar
+            const [hA, mA] = a.Hora_Inicio.split(':').map(Number);
+            const [hB, mB] = b.Hora_Inicio.split(':').map(Number);
+            const minutosA = (hA * 60) + mA;
+            const minutosB = (hB * 60) + mB;
+            
+            return minutosA - minutosB;
+        });
+        
+        clasificarEventos(datosOrdenados);
+        if (btn) btn.innerText = "Recargar";
+    } 
+});
 
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
