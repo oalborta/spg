@@ -27,14 +27,15 @@ function cargarDatos() {
         complete: (res) => {
             // Filtramos filas vacías antes de ordenar
             const data = res.data.filter(row => row.Evento && row.Fecha);
-            const datosOrdenados = data.sort((a, b) => {
-                const fA = new Date(a.Fecha.split('/').reverse().join('-')).getTime();
-                const fB = new Date(b.Fecha.split('/').reverse().join('-')).getTime();
-                if (fA !== fB) return fA - fB;
-                const [hA, mA] = a.Hora_Inicio.split(':').map(Number);
-                const [hB, mB] = b.Hora_Inicio.split(':').map(Number);
-                return (hA * 60 + mA) - (hB * 60 + mB);
-            });
+            // QUITA el bloque anterior de .sort y pon esto:
+const datosOrdenados = res.data.sort((a, b) => {
+    // Ordenamos primero por fecha y luego por hora
+    if (a.Fecha !== b.Fecha) return a.Fecha.localeCompare(b.Fecha);
+    
+    const [hA, mA] = a.Hora_Inicio.split(':').map(Number);
+    const [hB, mB] = b.Hora_Inicio.split(':').map(Number);
+    return (hA * 60 + mA) - (hB * 60 + mB);
+});
             clasificarEventos(datosOrdenados);
             if (btn) btn.innerText = "Recargar";
         } 
@@ -44,24 +45,22 @@ function cargarDatos() {
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
     const ahora = new Date();
-    // Ajustamos hoy para comparar correctamente con el formato AAAA-MM-DD
+    // Creamos la fecha de hoy en formato "YYYY-MM-DD"
     const hoyStr = ahora.toISOString().split('T')[0]; 
     const minsAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
-        // ev.Fecha ya viene como "2026-06-30"
-        const fechaEvento = ev.Fecha; 
+        if (!ev.Fecha) return; // Seguridad extra
         
-        // Convertimos Hora_Inicio a minutos
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
 
         // Ocultar si ya pasó hoy
-        if (fechaEvento === hoyStr && minsAhora > finMin) return;
+        if (ev.Fecha === hoyStr && minsAhora > finMin) return;
 
-        // Lógica de visualización
+        // Lógica de Logos
         let canalDisp = logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo">` : `<span class="badge">${ev.Canal.substring(0,3).toUpperCase()}</span>`;
         let torneoDisp = logosTorneo[ev.Torneo] ? `<img src="${logosTorneo[ev.Torneo]}" class="logo">` : `<span class="badge">${ev.Torneo ? ev.Torneo.substring(0,3).toUpperCase() : ''}</span>`;
 
@@ -74,10 +73,10 @@ function clasificarEventos(eventos) {
             <button class="btn-recordar" onclick="descargarRecordatorio('${ev.Evento}', '${ev.Fecha}', '${ev.Hora_Inicio}')">💾</button>
         `;
 
-        if (fechaEvento === hoyStr) {
+        if (ev.Fecha === hoyStr) {
             if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
             else document.querySelector('#hoy .lista').appendChild(div);
-        } else if (fechaEvento > hoyStr) {
+        } else if (ev.Fecha > hoyStr) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
