@@ -11,3 +11,13 @@ h2 { font-size: 0.7rem; color: #888; margin: 0 0 10px 0; border-bottom: 1px soli
 .badge { font-size: 0.6rem; width: 35px; height: 35px; background: #eee; display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 4px; color: #666; }
 .btn-recordar { background: #eee; border: none; border-radius: 4px; padding: 5px 8px; font-size: 0.7rem; cursor: pointer; }
 #ahora .evento { border-left: 4px solid #ff4444; }
+.btn-recordar { 
+    background: #1a73e8; 
+    color: white;
+    border: none; 
+    border-radius: 4px; 
+    padding: 6px 12px; 
+    font-size: 0.7rem; 
+    cursor: pointer;
+    font-weight: bold;
+}
