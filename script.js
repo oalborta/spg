@@ -18,28 +18,42 @@ function cargarDatos() {
 
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
-    const hoy = new Date().toISOString().split('T')[0];
-    const ahoraMin = new Date().getHours() * 60 + new Date().getMinutes();
+    
+    // Obtenemos la hora local actual en Bolivia (GMT-4)
+    const ahora = new Date();
+    const hoyStr = ahora.toISOString().split('T')[0];
+    const minutosAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
         if (!ev.Evento || !ev.Fecha) return;
-        
-        const inicio = parseInt(ev.Hora_Inicio.split(':')[0])*60 + parseInt(ev.Hora_Inicio.split(':')[1]);
-        const fin = parseInt(ev.Hora_Fin.split(':')[0])*60 + parseInt(ev.Hora_Fin.split(':')[1]);
+
+        const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
+        const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
+        const inicioMin = hI * 60 + mI;
+        const finMin = hF * 60 + mF;
 
         const div = document.createElement('div');
         div.className = 'evento';
-        div.innerHTML = `<img src="${logos[ev.Canal] || ''}" class="logo" onerror="this.style.display='none'">
+        
+        // El logo se busca por el nombre exacto de la columna "Canal"
+        const srcLogo = logos[ev.Canal] || '';
+        
+        div.innerHTML = `<img src="${srcLogo}" class="logo" onerror="this.style.display='none'">
                          <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br><small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
-                         <button onclick="reservarEvento('${ev.Evento}','${ev.Fecha}','${ev.Hora_Inicio}')" class="btn-recordar">Recordar</button>`;
+                         <button class="btn-recordar" onclick="alert('Evento programado')">Recordar</button>`;
 
-        if (ev.Fecha === hoy) {
-            if (ahoraMin >= inicio && ahoraMin <= fin) document.querySelector('#ahora .lista').appendChild(div);
-            else document.querySelector('#hoy .lista').appendChild(div);
-        } else if (ev.Fecha > hoy) {
+        // Lógica de clasificación
+        if (ev.Fecha === hoyStr) {
+            if (minutosAhora >= inicioMin && minutosAhora <= finMin) {
+                document.querySelector('#ahora .lista').appendChild(div);
+            } else {
+                document.querySelector('#hoy .lista').appendChild(div);
+            }
+        } else if (ev.Fecha > hoyStr) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
 }
+
 cargarDatos();
 setInterval(cargarDatos, 60000);
