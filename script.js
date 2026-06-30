@@ -1,6 +1,5 @@
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
-// Diccionario de Logos
 const logos = {
     "ESPN": "https://raw.githubusercontent.com/oalborta/spg/main/espn.png",
     "ESPN 2": "https://raw.githubusercontent.com/oalborta/spg/main/espn2.png",
@@ -15,8 +14,7 @@ const logos = {
 
 function cargarDatos() {
     Papa.parse(CSV_URL, { 
-        download: true, 
-        header: true, 
+        download: true, header: true, 
         complete: (res) => clasificarEventos(res.data) 
     });
 }
@@ -24,18 +22,17 @@ function cargarDatos() {
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
     
-    // Fecha de hoy formato AAAA-MM-DD
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy = new Date().toISOString().split('T')[0]; // 2026-06-29
     const ahoraMin = new Date().getHours() * 60 + new Date().getMinutes();
 
     eventos.forEach(ev => {
         if (!ev.Evento || !ev.Fecha) return;
 
-        // Normalizar fecha (por si viene como DD/MM/AAAA)
-        let fechaNormalizada = ev.Fecha;
-        if (ev.Fecha.includes('/')) {
-            const p = ev.Fecha.split('/');
-            fechaNormalizada = `${p[2]}-${p[1]}-${p[0]}`;
+        // Normalización de fecha
+        let f = ev.Fecha.trim();
+        if (f.includes('/')) {
+            const p = f.split('/');
+            f = `${p[2]}-${p[1]}-${p[0]}`;
         }
 
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
@@ -43,21 +40,27 @@ function clasificarEventos(eventos) {
         const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
 
+        // Construcción del elemento visual
         const div = document.createElement('div');
         div.className = 'evento';
         
-        // Aquí insertamos el logo. Si el nombre del canal en el sheet no está en el diccionario, no pone nada.
+        // Aquí incluimos el logo: si existe en el diccionario, lo pone, si no, lo oculta
         const urlLogo = logos[ev.Canal] || '';
-        const imgTag = urlLogo ? `<img src="${urlLogo}" class="logo">` : '';
+        const imgTag = urlLogo ? `<img src="${urlLogo}" class="logo" onerror="this.style.display='none'">` : '';
 
         div.innerHTML = `${imgTag}
-                         <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br><small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
+                         <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br>
+                         <small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
                          <button class="btn-recordar" onclick="alert('Programado')">Recordar</button>`;
 
-        if (fechaNormalizada === hoy) {
-            if (ahoraMin >= inicioMin && ahoraMin <= finMin) document.querySelector('#ahora .lista').appendChild(div);
-            else document.querySelector('#hoy .lista').appendChild(div);
-        } else if (fechaNormalizada > hoy) {
+        // Lógica de clasificación (ahora con soporte para eventos que cruzan medianoche)
+        if (f === hoy) {
+            if (ahoraMin >= inicioMin && (ahoraMin <= finMin || finMin < inicioMin)) {
+                document.querySelector('#ahora .lista').appendChild(div);
+            } else {
+                document.querySelector('#hoy .lista').appendChild(div);
+            }
+        } else if (f > hoy) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
