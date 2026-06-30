@@ -66,12 +66,13 @@ function clasificarEventos(eventos) {
 
         const div = document.createElement('div');
         div.className = 'evento';
-        div.innerHTML = `
-            <div class="col-logo">${canalDisp}</div>
-            <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br><small>${ev.Torneo || ''}</small><br><small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
-            <div class="col-logo">${torneoDisp}</div>
-            <button class="btn-recordar" onclick="descargarRecordatorio('${ev.Evento}', '${ev.Fecha}', '${ev.Hora_Inicio}')">💾</button>
-        `;
+        // ... dentro de clasificarEventos, en el div.innerHTML:
+div.innerHTML = `
+    <div class="col-logo">${canalDisp}</div>
+    <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br><small>${ev.Torneo || ''}</small><br><small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
+    <div class="col-logo">${torneoDisp}</div>
+    <button class="btn-recordar" onclick="descargarRecordatorio('${ev.Evento}', '${ev.Fecha}', '${ev.Hora_Inicio}')">Recordar</button>
+`;
 
         if (ev.Fecha === hoyStr) {
             if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
