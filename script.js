@@ -51,7 +51,18 @@ function cargarDatos() {
     Papa.parse(CSV_URL, { 
         download: true, header: true, 
         complete: (res) => {
-            clasificarEventos(res.data);
+            // AQUÍ ESTÁ EL AJUSTE: Ordenamos los datos antes de clasificarlos
+            const datosOrdenados = res.data.sort((a, b) => {
+                // Convertimos fechas a números para comparar
+                const fechaA = new Date(a.Fecha.split('/').reverse().join('-')).getTime();
+                const fechaB = new Date(b.Fecha.split('/').reverse().join('-')).getTime();
+                
+                if (fechaA !== fechaB) return fechaA - fechaB;
+                // Si la fecha es la misma, ordenamos por hora
+                return a.Hora_Inicio.localeCompare(b.Hora_Inicio);
+            });
+            
+            clasificarEventos(datosOrdenados);
             if (btn) btn.innerText = "Recargar";
         } 
     });
