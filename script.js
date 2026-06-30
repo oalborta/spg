@@ -44,21 +44,24 @@ function cargarDatos() {
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
     const ahora = new Date();
-    const hoyTs = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()).getTime();
+    // Ajustamos hoy para comparar correctamente con el formato AAAA-MM-DD
+    const hoyStr = ahora.toISOString().split('T')[0]; 
     const minsAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
-        let fPartes = ev.Fecha.split('/');
-        let fechaObj = new Date(fPartes[2], fPartes[1] - 1, fPartes[0]);
-        const fechaTs = fechaObj.getTime();
-
+        // ev.Fecha ya viene como "2026-06-30"
+        const fechaEvento = ev.Fecha; 
+        
+        // Convertimos Hora_Inicio a minutos
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
+        const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
 
-        if (fechaTs === hoyTs && minsAhora > finMin) return;
+        // Ocultar si ya pasó hoy
+        if (fechaEvento === hoyStr && minsAhora > finMin) return;
 
-        // Lógica de visualización con nombres si no hay logo
+        // Lógica de visualización
         let canalDisp = logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo">` : `<span class="badge">${ev.Canal.substring(0,3).toUpperCase()}</span>`;
         let torneoDisp = logosTorneo[ev.Torneo] ? `<img src="${logosTorneo[ev.Torneo]}" class="logo">` : `<span class="badge">${ev.Torneo ? ev.Torneo.substring(0,3).toUpperCase() : ''}</span>`;
 
@@ -71,10 +74,10 @@ function clasificarEventos(eventos) {
             <button class="btn-recordar" onclick="descargarRecordatorio('${ev.Evento}', '${ev.Fecha}', '${ev.Hora_Inicio}')">💾</button>
         `;
 
-        if (fechaTs === hoyTs) {
-            if (minsAhora >= (hI * 60 + mI) && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
+        if (fechaEvento === hoyStr) {
+            if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
             else document.querySelector('#hoy .lista').appendChild(div);
-        } else if (fechaTs > hoyTs) {
+        } else if (fechaEvento > hoyStr) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
