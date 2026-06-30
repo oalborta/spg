@@ -90,6 +90,40 @@ function descargarRecordatorio(evento, fecha, hora) {
     link.download = 'evento.ics';
     link.click();
 }
+function compartirApp() {
+    const url = window.location.href;
+    
+    // Intentamos el modo nativo del celular
+    if (navigator.share) {
+        navigator.share({
+            title: 'Programación Deportiva',
+            text: 'Mira la programación deportiva:',
+            url: url
+        }).catch((err) => {
+            console.log("Compartir cancelado o falló, usando copia manual:", err);
+            copiarAlPortapapeles(url);
+        });
+    } else {
+        // Modo fallback (computadora o navegadores antiguos)
+        copiarAlPortapapeles(url);
+    }
+}
 
+function copiarAlPortapapeles(texto) {
+    // Usamos el API moderna del portapapeles
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("¡Enlace copiado al portapapeles!");
+    }).catch(err => {
+        console.error("Error al copiar:", err);
+        // Fallback final para navegadores muy antiguos
+        const input = document.createElement('input');
+        input.value = texto;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert("Enlace copiado manualmente.");
+    });
+}
 cargarDatos();
 setInterval(cargarDatos, 60000);
