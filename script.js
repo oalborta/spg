@@ -66,6 +66,56 @@ function clasificarEventos(eventos) {
         }
     });
 }
+// 1. Función para compartir (copia al portapapeles)
+function compartirApp() {
+    const url = window.location.href;
+    if (navigator.share) {
+        navigator.share({ title: 'Programación Deportiva', url: url });
+    } else {
+        navigator.clipboard.writeText(url).then(() => alert("Enlace copiado al portapapeles."));
+    }
+}
+
+// 2. Función para descargar el recordatorio (ALERTA A 15 MIN)
+function descargarRecordatorio(evento, fecha, hora) {
+    const fechaISO = fecha.replace(/-/g, '');
+    const horaISO = hora.replace(/:/g, '') + '00';
+    const timestamp = fechaISO + 'T' + horaISO;
+
+    // Nota el cambio a TRIGGER:-PT15M
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${evento}
+DTSTART:${timestamp}
+DESCRIPTION:Alerta 15 min antes del evento.
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:Recordatorio: ${evento} empieza pronto.
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'evento.ics';
+    link.click();
+}
+
+// 3. Función recargar con feedback visual
+function cargarDatos() {
+    const btn = document.querySelector('button[onclick="cargarDatos()"]');
+    if(btn) btn.innerText = "Actualizando...";
+    Papa.parse(CSV_URL, { 
+        download: true, header: true, 
+        complete: (res) => {
+            clasificarEventos(res.data);
+            if(btn) btn.innerText = "Recargar";
+        }
+    });
+}
 
 cargarDatos();
 setInterval(cargarDatos, 60000);
