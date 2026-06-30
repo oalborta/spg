@@ -49,10 +49,11 @@ function clasificarEventos(eventos) {
             imgTag = `<img src="${logos[ev.Canal]}" class="logo" onerror="this.style.display='none'">`;
         }
 
-        div.innerHTML = `${imgTag}
-                         <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br>
-                         <small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
-                         <button class="btn-recordar" onclick="alert('Programado')">Recordar</button>`;
+        // Esto va dentro del bucle forEach de clasificarEventos:
+div.innerHTML = `${imgTag}
+                 <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br>
+                 <small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
+                 <button class="btn-recordar" onclick="descargarRecordatorio('${ev.Evento}', '${ev.Fecha}', '${ev.Hora_Inicio}')">Recordar</button>`;
 
         // Clasificación
         if (fechaTimestamp === hoyTimestamp) {
