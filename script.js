@@ -22,45 +22,46 @@ function cargarDatos() {
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
     
-    const hoy = new Date().toISOString().split('T')[0]; // 2026-06-29
-    const ahoraMin = new Date().getHours() * 60 + new Date().getMinutes();
+    const ahora = new Date();
+    const hoyTimestamp = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()).getTime();
+    const minutosAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
         if (!ev.Evento || !ev.Fecha) return;
 
-        // Normalización de fecha
-        let f = ev.Fecha.trim();
-        if (f.includes('/')) {
-            const p = f.split('/');
-            f = `${p[2]}-${p[1]}-${p[0]}`;
-        }
+        // Limpieza de datos
+        let fPartes = ev.Fecha.includes('/') ? ev.Fecha.split('/') : ev.Fecha.split('-');
+        let fechaObj = ev.Fecha.includes('/') ? new Date(fPartes[2], fPartes[1] - 1, fPartes[0]) : new Date(fPartes[0], fPartes[1] - 1, fPartes[2]);
+        const fechaTimestamp = fechaObj.getTime();
 
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
 
-        // Construcción del elemento visual
+        // Crear elemento de evento
         const div = document.createElement('div');
         div.className = 'evento';
-        
-        // Aquí incluimos el logo: si existe en el diccionario, lo pone, si no, lo oculta
-        const urlLogo = logos[ev.Canal] || '';
-        const imgTag = urlLogo ? `<img src="${urlLogo}" class="logo" onerror="this.style.display='none'">` : '';
+
+        // Lógica explicita de logo
+        let imgTag = '';
+        if (logos[ev.Canal]) {
+            imgTag = `<img src="${logos[ev.Canal]}" class="logo" onerror="this.style.display='none'">`;
+        }
 
         div.innerHTML = `${imgTag}
                          <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br>
                          <small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
                          <button class="btn-recordar" onclick="alert('Programado')">Recordar</button>`;
 
-        // Lógica de clasificación (ahora con soporte para eventos que cruzan medianoche)
-        if (f === hoy) {
-            if (ahoraMin >= inicioMin && (ahoraMin <= finMin || finMin < inicioMin)) {
+        // Clasificación
+        if (fechaTimestamp === hoyTimestamp) {
+            if (minutosAhora >= inicioMin && minutosAhora <= finMin) {
                 document.querySelector('#ahora .lista').appendChild(div);
             } else {
                 document.querySelector('#hoy .lista').appendChild(div);
             }
-        } else if (f > hoy) {
+        } else if (fechaTimestamp > hoyTimestamp) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
