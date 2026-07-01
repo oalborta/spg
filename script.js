@@ -17,14 +17,11 @@ const logosTorneo = {
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
-// ... (mantiene tus constantes logos y logosTorneo)
-
 function cargarDatos() {
     Papa.parse(CSV_URL, { 
         download: true, 
         header: true, 
         complete: (res) => {
-            // Filtramos filas donde el Evento no esté vacío
             const data = res.data.filter(row => row.Evento && row.Fecha);
             clasificarEventos(data);
         } 
@@ -34,24 +31,36 @@ function cargarDatos() {
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
     
-    // Obtenemos fecha de hoy a medianoche (Bolivia)
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     const hoyTs = hoy.getTime();
     
-    // Hora actual en minutos para comparar
     const ahora = new Date();
     const minsAhora = (ahora.getHours() * 60) + ahora.getMinutes();
 
+    // ✅ AQUÍ ESTÁ EL FIX: ordenar por fecha y luego por hora
+    eventos.sort((a, b) => {
+        // Primero ordenar por fecha
+        const partesA = a.Fecha.split('-');
+        const partesB = b.Fecha.split('-');
+        const fechaA = new Date(partesA[0], partesA[1] - 1, partesA[2]).getTime();
+        const fechaB = new Date(partesB[0], partesB[1] - 1, partesB[2]).getTime();
+        
+        if (fechaA !== fechaB) return fechaA - fechaB;
+        
+        // Si misma fecha, ordenar por hora de inicio
+        const [hA, mA] = a.Hora_Inicio.split(':').map(Number);
+        const [hB, mB] = b.Hora_Inicio.split(':').map(Number);
+        return (hA * 60 + mA) - (hB * 60 + mB);
+    });
+
     eventos.forEach(ev => {
-        // Aseguramos que ev.Fecha tenga el formato esperado
         if (!ev.Fecha) return;
         
         const partes = ev.Fecha.split('-');
         const fechaEvento = new Date(partes[0], partes[1] - 1, partes[2]);
         const fechaTs = fechaEvento.getTime();
 
-        // Convertimos horas a minutos
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMin = (hI * 60) + mI;
@@ -60,7 +69,6 @@ function clasificarEventos(eventos) {
         // Ocultar eventos de hoy que ya terminaron
         if (fechaTs === hoyTs && minsAhora > finMin) return;
 
-        // Crear elemento visual
         const div = document.createElement('div');
         div.className = 'evento';
         div.innerHTML = `
@@ -81,8 +89,11 @@ function clasificarEventos(eventos) {
 
         // Clasificar según fecha
         if (fechaTs === hoyTs) {
-            if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
-            else document.querySelector('#hoy .lista').appendChild(div);
+            if (minsAhora >= inicioMin && minsAhora <= finMin) {
+                document.querySelector('#ahora .lista').appendChild(div);
+            } else {
+                document.querySelector('#hoy .lista').appendChild(div);
+            }
         } else if (fechaTs > hoyTs) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
