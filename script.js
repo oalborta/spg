@@ -45,23 +45,23 @@ function clasificarEventos(eventos) {
     const minsAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
-        // 1. Limpiamos cualquier espacio invisible de los datos
-        const fechaEvento = ev.Fecha.trim();
-        const hoyStr = new Date().toISOString().split('T')[0];
+        // 1. Limpiamos y convertimos a fecha real
+        const fechaEvento = new Date(ev.Fecha + 'T00:00:00').getTime();
+        const hoyTs = new Date().setHours(0,0,0,0);
         
+        // 2. Calculamos los minutos para el horario
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
         const minsAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
-        // 2. Clasificación lógica estricta
-        const esHoy = (fechaEvento === hoyStr);
+        // 3. Comparación matemática
+        const esHoy = (fechaEvento === hoyTs);
         const esAhora = (minsAhora >= inicioMin && minsAhora <= finMin);
 
-        // Debug para consola: Solo verás esto si abres la consola (F12)
-        // Esto nos dirá exactamente por qué falla
-        console.log(`Evento: ${ev.Evento} | Fecha: ${fechaEvento} vs Hoy: ${hoyStr} | EsHoy: ${esHoy}`);
+        // Debug para ver qué está pasando exactamente
+        console.log(`Evento: ${ev.Evento} | Fecha: ${ev.Fecha} | EsHoy: ${esHoy}`);
 
         // Crear elemento visual
         let canalDisp = logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo">` : `<span class="badge">${ev.Canal.substring(0,3).toUpperCase()}</span>`;
@@ -80,12 +80,12 @@ function clasificarEventos(eventos) {
         btn.onclick = () => descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
         div.appendChild(btn);
 
-        // 3. Insertar en la sección correcta
+        // Clasificación
         if (esHoy && esAhora) {
             document.querySelector('#ahora .lista').appendChild(div);
         } else if (esHoy) {
             document.querySelector('#hoy .lista').appendChild(div);
-        } else if (fechaEvento > hoyStr) {
+        } else if (fechaEvento > hoyTs) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
