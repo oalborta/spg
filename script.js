@@ -59,11 +59,33 @@ function clasificarEventos(eventos) {
         btn.onclick = () => descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
         div.appendChild(btn);
 
+       // ... (resto del código igual hasta llegar a la inserción)
+
+        // 3. Lógica de inserción ordenada
+        let contenedor;
         if (fechaTs === hoyTs) {
-            if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
-            else document.querySelector('#hoy .lista').appendChild(div);
+            contenedor = (minsAhora >= inicioMin && minsAhora <= finMin) 
+                         ? document.querySelector('#ahora .lista') 
+                         : document.querySelector('#hoy .lista');
         } else if (fechaTs > hoyTs) {
-            document.querySelector('#proximos .lista').appendChild(div);
+            contenedor = document.querySelector('#proximos .lista');
+        }
+
+        if (contenedor) {
+            // Añadimos el evento y forzamos el re-ordenamiento del contenedor por hora
+            contenedor.appendChild(div);
+            
+            // Ordenar hijos por hora dentro del contenedor
+            const eventosEnContenedor = Array.from(contenedor.querySelectorAll('.evento'));
+            eventosEnContenedor.sort((a, b) => {
+                // Obtenemos la hora del texto dentro del div (asumiendo que está en formato HH:MM)
+                const horaA = a.querySelector('small:last-of-type').innerText.split('|')[1].trim();
+                const horaB = b.querySelector('small:last-of-type').innerText.split('|')[1].trim();
+                return horaA.localeCompare(horaB);
+            });
+            
+            // Volvemos a añadir en orden correcto
+            eventosEnContenedor.forEach(evDiv => contenedor.appendChild(evDiv));
         }
     });
 }
