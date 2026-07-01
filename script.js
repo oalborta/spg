@@ -45,13 +45,25 @@ function clasificarEventos(eventos) {
     const minsAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
     eventos.forEach(ev => {
+        // 1. Limpiamos cualquier espacio invisible de los datos
+        const fechaEvento = ev.Fecha.trim();
+        const hoyStr = new Date().toISOString().split('T')[0];
+        
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMin = hI * 60 + mI;
         const finMin = hF * 60 + mF;
+        const minsAhora = ahora.getHours() * 60 + ahora.getMinutes();
 
-        if (ev.Fecha === hoyStr && minsAhora > finMin) return;
+        // 2. Clasificación lógica estricta
+        const esHoy = (fechaEvento === hoyStr);
+        const esAhora = (minsAhora >= inicioMin && minsAhora <= finMin);
 
+        // Debug para consola: Solo verás esto si abres la consola (F12)
+        // Esto nos dirá exactamente por qué falla
+        console.log(`Evento: ${ev.Evento} | Fecha: ${fechaEvento} vs Hoy: ${hoyStr} | EsHoy: ${esHoy}`);
+
+        // Crear elemento visual
         let canalDisp = logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo">` : `<span class="badge">${ev.Canal.substring(0,3).toUpperCase()}</span>`;
         let torneoDisp = logosTorneo[ev.Torneo] ? `<img src="${logosTorneo[ev.Torneo]}" class="logo">` : `<span class="badge">${ev.Torneo ? ev.Torneo.substring(0,3).toUpperCase() : ''}</span>`;
 
@@ -62,22 +74,21 @@ function clasificarEventos(eventos) {
             <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br><small>${ev.Torneo || ''}</small><br><small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
             <div class="col-logo">${torneoDisp}</div>
         `;
-
-        // Botón creado con JS puro para evitar errores de comillas
         const btn = document.createElement('button');
         btn.className = 'btn-recordar';
         btn.innerText = 'Recordar';
         btn.onclick = () => descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
         div.appendChild(btn);
 
-        if (ev.Fecha === hoyStr) {
-            if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
-            else document.querySelector('#hoy .lista').appendChild(div);
-        } else if (ev.Fecha > hoyStr) {
+        // 3. Insertar en la sección correcta
+        if (esHoy && esAhora) {
+            document.querySelector('#ahora .lista').appendChild(div);
+        } else if (esHoy) {
+            document.querySelector('#hoy .lista').appendChild(div);
+        } else if (fechaEvento > hoyStr) {
             document.querySelector('#proximos .lista').appendChild(div);
         }
     });
-}
 
 function descargarRecordatorio(evento, fecha, hora) {
     const fLimpia = fecha.replace(/-/g, '');
