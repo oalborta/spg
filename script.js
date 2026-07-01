@@ -21,8 +21,14 @@ function cargarDatos() {
     Papa.parse(CSV_URL, { 
         download: true, header: true, 
         complete: (res) => {
+            // Filtramos y ORDENAMOS aquí, antes de enviar a clasificar
             const data = res.data.filter(row => row.Evento && row.Fecha);
-            data.sort((a, b) => a.Fecha.localeCompare(b.Fecha) || a.Hora_Inicio.localeCompare(b.Hora_Inicio));
+            data.sort((a, b) => {
+                const fechaA = new Date(a.Fecha).getTime();
+                const fechaB = new Date(b.Fecha).getTime();
+                if (fechaA !== fechaB) return fechaA - fechaB;
+                return a.Hora_Inicio.localeCompare(b.Hora_Inicio);
+            });
             clasificarEventos(data);
         } 
     });
@@ -39,11 +45,14 @@ function clasificarEventos(eventos) {
         const partes = ev.Fecha.split('-');
         const fechaEvento = new Date(partes[0], partes[1] - 1, partes[2]);
         const fechaTs = fechaEvento.getTime();
-
+        
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMin = (hI * 60) + mI;
         const finMin = (hF * 60) + mF;
+
+        // Ocultar eventos ya finalizados de hoy
+        if (fechaTs === hoyTs && minsAhora > finMin) return;
 
         const div = document.createElement('div');
         div.className = 'evento';
@@ -59,33 +68,12 @@ function clasificarEventos(eventos) {
         btn.onclick = () => descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
         div.appendChild(btn);
 
-       // ... (resto del código igual hasta llegar a la inserción)
-
-        // 3. Lógica de inserción ordenada
-        let contenedor;
+        // Inserción directa (como los datos ya vienen ordenados del cargarDatos, esto mantiene el orden)
         if (fechaTs === hoyTs) {
-            contenedor = (minsAhora >= inicioMin && minsAhora <= finMin) 
-                         ? document.querySelector('#ahora .lista') 
-                         : document.querySelector('#hoy .lista');
+            if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
+            else document.querySelector('#hoy .lista').appendChild(div);
         } else if (fechaTs > hoyTs) {
-            contenedor = document.querySelector('#proximos .lista');
-        }
-
-        if (contenedor) {
-            // Añadimos el evento y forzamos el re-ordenamiento del contenedor por hora
-            contenedor.appendChild(div);
-            
-            // Ordenar hijos por hora dentro del contenedor
-            const eventosEnContenedor = Array.from(contenedor.querySelectorAll('.evento'));
-            eventosEnContenedor.sort((a, b) => {
-                // Obtenemos la hora del texto dentro del div (asumiendo que está en formato HH:MM)
-                const horaA = a.querySelector('small:last-of-type').innerText.split('|')[1].trim();
-                const horaB = b.querySelector('small:last-of-type').innerText.split('|')[1].trim();
-                return horaA.localeCompare(horaB);
-            });
-            
-            // Volvemos a añadir en orden correcto
-            eventosEnContenedor.forEach(evDiv => contenedor.appendChild(evDiv));
+            document.querySelector('#proximos .lista').appendChild(div);
         }
     });
 }
