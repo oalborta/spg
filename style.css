@@ -1,23 +1,203 @@
-body { font-family: sans-serif; background: #f8f9fa; margin: 0; padding-top: 80px; }
-.navbar { position: fixed; top: 0; width: 100%; height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 100; box-sizing: border-box; }
-.btn-group { display: flex; gap: 10px; }
-.btn-action { background: #1a73e8; border: none; color: white; padding: 8px 15px; border-radius: 5px; font-size: 0.8rem; cursor: pointer; }
-h1 { font-size: 1.1rem; color: #1a73e8; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
-.bloque { margin: 15px; background: #fff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-h2 { font-size: 0.7rem; color: #888; margin: 0 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-.evento { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #f9f9f9; gap: 10px; }
-.col-logo { min-width: 40px; display: flex; align-items: center; justify-content: center; }
-.logo { width: 35px; height: 35px; object-fit: contain; }
-.badge { font-size: 0.6rem; width: 35px; height: 35px; background: #eee; display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 4px; color: #666; }
-.btn-recordar { background: #eee; border: none; border-radius: 4px; padding: 5px 8px; font-size: 0.7rem; cursor: pointer; }
-#ahora .evento { border-left: 4px solid #ff4444; }
-.btn-recordar { 
-    background: #1a73e8; 
+* { box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding-top: 90px;
+    color: #333;
+}
+
+/* ─── NAVBAR ─── */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    padding: 0 20px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+}
+
+.navbar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.1rem;
+    color: #fff;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.texto-legal {
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 3px 0 0 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ─── BOTONES ─── */
+.btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: white;
-    border: none; 
-    border-radius: 4px; 
-    padding: 6px 12px; 
-    font-size: 0.7rem; 
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.75rem;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(5px);
+}
+
+.btn-action:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-action:active {
+    transform: translateY(0);
+}
+
+/* ─── BLOQUES ─── */
+.bloque {
+    margin: 12px 15px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+h2 {
+    font-size: 0.65rem;
+    color: #999;
+    margin: 0 0 12px 0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+/* ─── EVENTOS ─── */
+.evento {
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    border-bottom: 1px solid #f5f5f5;
+    gap: 12px;
+    transition: background 0.15s ease;
+    border-radius: 8px;
+}
+
+.evento:hover {
+    background: #f8f9ff;
+}
+
+.evento:last-child {
+    border-bottom: none;
+}
+
+.col-logo {
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.badge {
+    font-size: 0.55rem;
+    width: 38px;
+    height: 38px;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 8px;
+    color: #888;
+    font-weight: 700;
+}
+
+.evento strong {
+    font-size: 0.85rem;
+    color: #222;
+}
+
+.evento small {
+    color: #999;
+    font-size: 0.72rem;
+}
+
+/* ─── BOTÓN RECORDAR ─── */
+.btn-recordar {
+    background: #e8f0fe;
+    color: #1a73e8;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.68rem;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-recordar:hover {
+    background: #1a73e8;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-recordar:active {
+    transform: translateY(0);
+}
+
+/* ─── EN VIVO ─── */
+#ahora .evento {
+    border-left: 4px solid #ff4444;
+    background: #fff5f5;
+    border-radius: 0 8px 8px 0;
+}
+
+#ahora .evento:hover {
+    background: #ffecec;
+}
+
+#ahora h2 {
+    color: #ff4444;
+    border-bottom-color: #ffe0e0;
+}
+
+#ahora h2::before {
+    content: '● ';
+    animation: pulso 1.5s infinite;
+}
+
+@keyframes pulso {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }
