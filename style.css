@@ -5,6 +5,7 @@ body {
     background: #f0f2f5;
     margin: 0;
     padding-top: 90px;
+    padding-bottom: 60px;
     color: #333;
 }
 
@@ -96,6 +97,26 @@ h2 {
     border-bottom: 2px solid #f0f0f0;
 }
 
+/* ─── SEPARADOR DE DÍA ─── */
+.separador-dia {
+    font-size: 0.7rem;
+    color: #1a73e8;
+    font-weight: 700;
+    padding: 10px 8px 5px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e8f0fe;
+    margin-bottom: 5px;
+}
+
+/* ─── SIN EVENTOS ─── */
+.sin-eventos {
+    text-align: center;
+    padding: 25px 10px;
+    color: #ccc;
+    font-size: 0.8rem;
+}
+
 /* ─── EVENTOS ─── */
 .evento {
     display: flex;
@@ -105,6 +126,12 @@ h2 {
     gap: 12px;
     transition: background 0.15s ease;
     border-radius: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .evento:hover {
@@ -147,9 +174,26 @@ h2 {
     color: #222;
 }
 
-.evento small {
+.event-info small {
     color: #999;
     font-size: 0.72rem;
+}
+
+.hora-destacada {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1a73e8;
+}
+
+.cuenta-regresiva {
+    font-size: 0.65rem;
+    color: #4caf50;
+    font-weight: 600;
+    background: #e8f5e9;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 3px;
 }
 
 /* ─── BOTÓN RECORDAR ─── */
@@ -197,7 +241,19 @@ h2 {
     animation: pulso 1.5s infinite;
 }
 
+#ahora .hora-destacada {
+    color: #ff4444;
+}
+
 @keyframes pulso {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
+}
+
+/* ─── FOOTER ─── */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #bbb;
+    font-size: 0.65rem;
 }
