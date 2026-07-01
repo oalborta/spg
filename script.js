@@ -21,14 +21,8 @@ function cargarDatos() {
     Papa.parse(CSV_URL, { 
         download: true, header: true, 
         complete: (res) => {
-            // Filtramos y ORDENAMOS aquí, antes de enviar a clasificar
+            // Ya no ordenamos aquí, tomamos el orden tal cual viene de la hoja
             const data = res.data.filter(row => row.Evento && row.Fecha);
-            data.sort((a, b) => {
-                const fechaA = new Date(a.Fecha).getTime();
-                const fechaB = new Date(b.Fecha).getTime();
-                if (fechaA !== fechaB) return fechaA - fechaB;
-                return a.Hora_Inicio.localeCompare(b.Hora_Inicio);
-            });
             clasificarEventos(data);
         } 
     });
