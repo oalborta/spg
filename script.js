@@ -17,11 +17,14 @@ const logosTorneo = {
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
+// ... (mantiene tus constantes logos y logosTorneo)
+
 function cargarDatos() {
     Papa.parse(CSV_URL, { 
-        download: true, header: true, 
+        download: true, 
+        header: true, 
         complete: (res) => {
-            // Ya no ordenamos aquí, tomamos el orden tal cual viene de la hoja
+            // Filtramos filas donde el Evento no esté vacío
             const data = res.data.filter(row => row.Evento && row.Fecha);
             clasificarEventos(data);
         } 
@@ -30,29 +33,43 @@ function cargarDatos() {
 
 function clasificarEventos(eventos) {
     document.querySelectorAll('.lista').forEach(c => c.innerHTML = '');
+    
+    // Obtenemos fecha de hoy a medianoche (Bolivia)
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     const hoyTs = hoy.getTime();
-    const minsAhora = (new Date().getHours() * 60) + new Date().getMinutes();
+    
+    // Hora actual en minutos para comparar
+    const ahora = new Date();
+    const minsAhora = (ahora.getHours() * 60) + ahora.getMinutes();
 
     eventos.forEach(ev => {
+        // Aseguramos que ev.Fecha tenga el formato esperado
+        if (!ev.Fecha) return;
+        
         const partes = ev.Fecha.split('-');
         const fechaEvento = new Date(partes[0], partes[1] - 1, partes[2]);
         const fechaTs = fechaEvento.getTime();
-        
+
+        // Convertimos horas a minutos
         const [hI, mI] = ev.Hora_Inicio.split(':').map(Number);
         const [hF, mF] = ev.Hora_Fin.split(':').map(Number);
         const inicioMin = (hI * 60) + mI;
         const finMin = (hF * 60) + mF;
 
-        // Ocultar eventos ya finalizados de hoy
+        // Ocultar eventos de hoy que ya terminaron
         if (fechaTs === hoyTs && minsAhora > finMin) return;
 
+        // Crear elemento visual
         const div = document.createElement('div');
         div.className = 'evento';
         div.innerHTML = `
-            <div class="col-logo">${logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo">` : `<span class="badge">${ev.Canal.substring(0,3).toUpperCase()}</span>`}</div>
-            <div style="flex-grow:1;"><strong>${ev.Evento}</strong><br><small>${ev.Torneo || ''}</small><br><small>${ev.Fecha} | ${ev.Hora_Inicio}</small></div>
+            <div class="col-logo">${logos[ev.Canal] ? `<img src="${logos[ev.Canal]}" class="logo">` : `<span class="badge">${ev.Canal ? ev.Canal.substring(0,3).toUpperCase() : ''}</span>`}</div>
+            <div style="flex-grow:1;">
+                <strong>${ev.Evento}</strong><br>
+                <small>${ev.Torneo || ''}</small><br>
+                <small>${ev.Fecha} | ${ev.Hora_Inicio}</small>
+            </div>
             <div class="col-logo">${logosTorneo[ev.Torneo] ? `<img src="${logosTorneo[ev.Torneo]}" class="logo">` : `<span class="badge">${ev.Torneo ? ev.Torneo.substring(0,3).toUpperCase() : ''}</span>`}</div>
         `;
         
@@ -62,7 +79,7 @@ function clasificarEventos(eventos) {
         btn.onclick = () => descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
         div.appendChild(btn);
 
-        // Inserción directa (como los datos ya vienen ordenados del cargarDatos, esto mantiene el orden)
+        // Clasificar según fecha
         if (fechaTs === hoyTs) {
             if (minsAhora >= inicioMin && minsAhora <= finMin) document.querySelector('#ahora .lista').appendChild(div);
             else document.querySelector('#hoy .lista').appendChild(div);
