@@ -143,7 +143,6 @@ function clasificarEventos(eventos) {
                 document.querySelector('#hoy .lista').appendChild(div);
             }
         } else if (fechaTs > hoyTs) {
-            // Separador por día en próximos
             if (ev.Fecha !== ultimoDiaMostrado) {
                 ultimoDiaMostrado = ev.Fecha;
                 var sep = document.createElement('div');
@@ -155,7 +154,6 @@ function clasificarEventos(eventos) {
         }
     });
 
-    // Mensaje "sin eventos" en secciones vacías
     ['ahora', 'hoy', 'proximos'].forEach(function(id) {
         var lista = document.querySelector('#' + id + ' .lista');
         if (lista.children.length === 0) {
