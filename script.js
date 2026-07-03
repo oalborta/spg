@@ -14,7 +14,7 @@ var logos = {
 
 var logosTorneo = {
     "MUNDIAL": "https://github.com/oalborta/spg/blob/main/fifa.png?raw=true",
-    "F1": "https://github.com/oalborta/spg/blob/main/f1.png?raw=true",
+    "F1": "https://github.com/oalborta/spg/blob/main/F1.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
@@ -70,9 +70,6 @@ function clasificarEventos(eventos) {
     hoy.setHours(0, 0, 0, 0);
     var hoyTs = hoy.getTime();
 
-    var ahora = new Date();
-    var minsAhora = (ahora.getHours() * 60) + ahora.getMinutes();
-
     eventos.sort(function(a, b) {
         var pA = a.Fecha.split('-');
         var pB = b.Fecha.split('-');
@@ -99,10 +96,31 @@ function clasificarEventos(eventos) {
         var mI = parseInt(ev.Hora_Inicio.split(':')[1]);
         var hF = parseInt(ev.Hora_Fin.split(':')[0]);
         var mF = parseInt(ev.Hora_Fin.split(':')[1]);
-        var inicioMin = (hI * 60) + mI;
-        var finMin = (hF * 60) + mF;
 
-        if (fechaTs === hoyTs && minsAhora > finMin) return;
+        // ⚡ CREAR FECHAS EXACTAS
+        var fechaInicio = new Date(partes[0], partes[1] - 1, partes[2], hI, mI);
+        var fechaFin = new Date(partes[0], partes[1] - 1, partes[2], hF, mF);
+
+        // ⚡ FIX DE MEDIANOCHE: Si la hora de fin es menor, le sumamos 1 día
+        if (fechaFin <= fechaInicio) {
+            fechaFin.setDate(fechaFin.getDate() + 1);
+        }
+
+        var ahora = new Date();
+
+        // Ocultar si ya terminó
+        if (ahora > fechaFin) return;
+
+        // ¿Está en vivo?
+        var estaEnVivo = (ahora >= fechaInicio && ahora <= fechaFin);
+
+        // ¿Es de hoy?
+        var esHoy = (fechaTs === hoyTs);
+
+        // Si cruza la medianoche y ya es el día siguiente, lo mostramos en "En vivo"
+        if (!esHoy && estaEnVivo) {
+            esHoy = true;
+        }
 
         var logoCanal = logos[ev.Canal]
             ? '<img src="' + logos[ev.Canal] + '" class="logo">'
@@ -136,8 +154,9 @@ function clasificarEventos(eventos) {
         };
         div.appendChild(btn);
 
-        if (fechaTs === hoyTs) {
-            if (minsAhora >= inicioMin && minsAhora <= finMin) {
+        // 📂 Clasificar
+        if (esHoy) {
+            if (estaEnVivo) {
                 document.querySelector('#ahora .lista').appendChild(div);
             } else {
                 document.querySelector('#hoy .lista').appendChild(div);
