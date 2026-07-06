@@ -97,27 +97,20 @@ function clasificarEventos(eventos) {
         var hF = parseInt(ev.Hora_Fin.split(':')[0]);
         var mF = parseInt(ev.Hora_Fin.split(':')[1]);
 
-        // ⚡ CREAR FECHAS EXACTAS
         var fechaInicio = new Date(partes[0], partes[1] - 1, partes[2], hI, mI);
         var fechaFin = new Date(partes[0], partes[1] - 1, partes[2], hF, mF);
 
-        // ⚡ FIX DE MEDIANOCHE: Si la hora de fin es menor, le sumamos 1 día
         if (fechaFin <= fechaInicio) {
             fechaFin.setDate(fechaFin.getDate() + 1);
         }
 
         var ahora = new Date();
 
-        // Ocultar si ya terminó
         if (ahora > fechaFin) return;
 
-        // ¿Está en vivo?
         var estaEnVivo = (ahora >= fechaInicio && ahora <= fechaFin);
-
-        // ¿Es de hoy?
         var esHoy = (fechaTs === hoyTs);
 
-        // Si cruza la medianoche y ya es el día siguiente, lo mostramos en "En vivo"
         if (!esHoy && estaEnVivo) {
             esHoy = true;
         }
@@ -154,7 +147,6 @@ function clasificarEventos(eventos) {
         };
         div.appendChild(btn);
 
-        // 📂 Clasificar
         if (esHoy) {
             if (estaEnVivo) {
                 document.querySelector('#ahora .lista').appendChild(div);
@@ -181,15 +173,26 @@ function clasificarEventos(eventos) {
     });
 }
 
+// 🛠️ FUNCIÓN NUEVA "A PRUEBA DE BALAS" PARA MAC
 function descargarRecordatorio(evento, fecha, hora) {
+    // 1. Limpiamos el nombre del evento (quitamos saltos de línea y comas que hacen fallar a Mac)
+    var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
+
     var fLimpia = fecha.replace(/-/g, '');
     var hLimpia = hora.replace(/:/g, '') + '00';
-    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:' + evento + '\nDTSTART:' + fLimpia + 'T' + hLimpia + '\nDESCRIPTION:Recordatorio de ' + evento + '\nEND:VEVENT\nEND:VCALENDAR';
+
+    // 2. Formato estricto que le gusta a Apple Calendar
+    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART:' + fLimpia + 'T' + hLimpia + '\nDTEND:' + fLimpia + 'T' + hLimpia + '\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
+    
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'evento.ics';
+    
+    // 3. Truco para forzar la descarga en navegadores de Mac
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
 }
 
 function compartirApp() {
