@@ -14,7 +14,7 @@ var logos = {
 
 var logosTorneo = {
     "MUNDIAL": "https://github.com/oalborta/spg/blob/main/fifa.png?raw=true",
-    "F1": "https://github.com/oalborta/spg/blob/main/F1.png?raw=true",
+    "F1": "https://github.com/oalborta/spg/blob/main/f1.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
