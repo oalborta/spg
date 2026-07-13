@@ -174,14 +174,28 @@ function clasificarEventos(eventos) {
     });
 }
 
-// 🛠️ FUNCIÓN NUEVA "A PRUEBA DE BALAS" PARA MAC
 function descargarRecordatorio(evento, fecha, hora) {
     var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
 
-    var zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // 1. Separamos el día y la hora
+    var partesFecha = fecha.split('-');
+    var partesHora = hora.split(':');
 
-    // 🛠️ FIX DEFINITIVO: Con TZID, Mac exige que la fecha tenga guiones y la hora tenga 2 puntos
-    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART;TZID=' + zonaHoraria + ':' + fecha + 'T' + hora + ':00\nDTEND;TZID=' + zonaHoraria + ':' + fecha + 'T' + hora + ':00\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
+    // 2. Le decimos a tu celular: "Esto es a las 8:00 de mi país (Bolivia)"
+    var fechaLocal = new Date(
+        parseInt(partesFecha[0]), 
+        parseInt(partesFecha[1]) - 1, 
+        parseInt(partesFecha[2]), 
+        parseInt(partesHora[0]), 
+        parseInt(partesHora[1]), 
+        0
+    );
+
+    // 3. El celular hace la matemática y lo convierte a "Hora Mundial" (UTC)
+    // A esto Mac jamás lo rechaza. Fíjate que al final se agrega una "Z"
+    var fechaMundo = fechaLocal.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART:' + fechaMundo + '\nDTEND:' + fechaMundo + '\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
     
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
