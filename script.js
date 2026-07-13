@@ -176,21 +176,21 @@ function clasificarEventos(eventos) {
 
 // 🛠️ FUNCIÓN NUEVA "A PRUEBA DE BALAS" PARA MAC
 function descargarRecordatorio(evento, fecha, hora) {
-    // 1. Limpiamos el nombre del evento (quitamos saltos de línea y comas que hacen fallar a Mac)
     var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
 
     var fLimpia = fecha.replace(/-/g, '');
     var hLimpia = hora.replace(/:/g, '') + '00';
 
-    // 2. Formato estricto que le gusta a Apple Calendar
-    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART:' + fLimpia + 'T' + hLimpia + '\nDTEND:' + fLimpia + 'T' + hLimpia + '\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
+    // 🛠️ FIX PARA MAC: Le decimos explícitamente nuestra zona horaria
+    var zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    // Fíjate que ahora dice TZID= antes de la hora
+    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART;TZID=' + zonaHoraria + ':' + fLimpia + 'T' + hLimpia + '\nDTEND;TZID=' + zonaHoraria + ':' + fLimpia + 'T' + hLimpia + '\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
     
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'evento.ics';
-    
-    // 3. Truco para forzar la descarga en navegadores de Mac
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
