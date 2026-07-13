@@ -177,30 +177,36 @@ function clasificarEventos(eventos) {
 function descargarRecordatorio(evento, fecha, hora) {
     var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
 
-    // 1. Separamos el día y la hora
     var partesFecha = fecha.split('-');
     var partesHora = hora.split(':');
 
-    // 2. Le decimos a tu celular: "Esto es a las 8:00 de mi país (Bolivia)"
-    var fechaLocal = new Date(
-        parseInt(partesFecha[0]), 
-        parseInt(partesFecha[1]) - 1, 
-        parseInt(partesFecha[2]), 
-        parseInt(partesHora[0]), 
-        parseInt(partesHora[1]), 
-        0
-    );
+    var anio = partesFecha[0];
+    var mes = partesFecha[1];
+    var dia = partesFecha[2];
+    var h = partesHora[0];
+    var m = partesHora[1];
 
-    // 3. El celular hace la matemática y lo convierte a "Hora Mundial" (UTC)
-    // A esto Mac jamás lo rechaza. Fíjate que al final se agrega una "Z"
-    var fechaMundo = fechaLocal.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    // Formato de inicio
+    var inicioStr = anio + mes + dia + 'T' + h + m + '00';
+    
+    // 🛠️ FIX ANDROID: Le sumamos 1 hora de duración. Android se confunde si empieza y termina a la misma hora.
+    var fechaFinDate = new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia), parseInt(h) + 1, parseInt(m), 0);
+    var anioF = fechaFinDate.getFullYear();
+    var mesF = String(fechaFinDate.getMonth() + 1).padStart(2, '0');
+    var diaF = String(fechaFinDate.getDate()).padStart(2, '0');
+    var hF = String(fechaFinDate.getHours()).padStart(2, '0');
+    var mF = String(fechaFinDate.getMinutes()).padStart(2, '0');
+    var finStr = anioF + mesF + diaF + 'T' + hF + mF + '00';
 
-    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART:' + fechaMundo + '\nDTEND:' + fechaMundo + '\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
+    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART:' + inicioStr + '\nDTEND:' + finStr + '\nSUMMARY:' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
     
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'evento.ics';
+    
+    // 🛠️ FIX ANDROID: Nombre único por fecha para evitar que actualice eventos viejos
+    link.download = 'evento_' + anio + mes + dia + '.ics';
+    
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
