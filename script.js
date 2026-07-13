@@ -178,14 +178,10 @@ function clasificarEventos(eventos) {
 function descargarRecordatorio(evento, fecha, hora) {
     var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
 
-    var fLimpia = fecha.replace(/-/g, '');
-    var hLimpia = hora.replace(/:/g, '') + '00';
-
-    // 🛠️ FIX PARA MAC: Le decimos explícitamente nuestra zona horaria
     var zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // Fíjate que ahora dice TZID= antes de la hora
-    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART;TZID=' + zonaHoraria + ':' + fLimpia + 'T' + hLimpia + '\nDTEND;TZID=' + zonaHoraria + ':' + fLimpia + 'T' + hLimpia + '\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
+    // 🛠️ FIX DEFINITIVO: Con TZID, Mac exige que la fecha tenga guiones y la hora tenga 2 puntos
+    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART;TZID=' + zonaHoraria + ':' + fecha + 'T' + hora + ':00\nDTEND;TZID=' + zonaHoraria + ':' + fecha + 'T' + hora + ':00\nSUMMARY:' + eventoLimpio + '\nDESCRIPTION:Recordatorio de ' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
     
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
