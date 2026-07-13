@@ -181,32 +181,39 @@ function descargarRecordatorio(evento, fecha, hora) {
     var partesHora = hora.split(':');
 
     var anio = partesFecha[0];
-    var mes = partesFecha[1];
-    var dia = partesFecha[2];
-    var h = partesHora[0];
-    var m = partesHora[1];
+    // Forzamos a que siempre tengan 2 dígitos (ej: "8" se vuelve "08")
+    var mes = partesFecha[1].padStart(2, '0');
+    var dia = partesFecha[2].padStart(2, '0');
+    var h = partesHora[0].padStart(2, '0'); // Aquí estaba el bug
+    var m = partesHora[1].padStart(2, '0');
 
-    // Formato de inicio
     var inicioStr = anio + mes + dia + 'T' + h + m + '00';
-    
-    // 🛠️ FIX ANDROID: Le sumamos 1 hora de duración. Android se confunde si empieza y termina a la misma hora.
-    var fechaFinDate = new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia), parseInt(h) + 1, parseInt(m), 0);
-    var anioF = fechaFinDate.getFullYear();
-    var mesF = String(fechaFinDate.getMonth() + 1).padStart(2, '0');
-    var diaF = String(fechaFinDate.getDate()).padStart(2, '0');
-    var hF = String(fechaFinDate.getHours()).padStart(2, '0');
-    var mF = String(fechaFinDate.getMinutes()).padStart(2, '0');
+
+    // Duración de 1 hora
+    var finDate = new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia), parseInt(h) + 1, parseInt(m), 0);
+    var anioF = String(finDate.getFullYear());
+    var mesF = String(finDate.getMonth() + 1).padStart(2, '0');
+    var diaF = String(finDate.getDate()).padStart(2, '0');
+    var hF = String(finDate.getHours()).padStart(2, '0');
+    var mF = String(finDate.getMinutes()).padStart(2, '0');
     var finStr = anioF + mesF + diaF + 'T' + hF + mF + '00';
 
-    var ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Programacion Deportiva//ES\nBEGIN:VEVENT\nDTSTART:' + inicioStr + '\nDTEND:' + finStr + '\nSUMMARY:' + eventoLimpio + '\nEND:VEVENT\nEND:VCALENDAR';
+    // Formato súper estricto que le encanta a Android y a iPhone
+    var salto = '\r\n';
+    var ics = 'BEGIN:VCALENDAR' + salto + 
+              'VERSION:2.0' + salto + 
+              'PRODID:-//Programacion Deportiva//ES' + salto + 
+              'BEGIN:VEVENT' + salto + 
+              'DTSTART:' + inicioStr + salto + 
+              'DTEND:' + finStr + salto + 
+              'SUMMARY:' + eventoLimpio + salto + 
+              'END:VEVENT' + salto + 
+              'END:VCALENDAR';
     
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    
-    // 🛠️ FIX ANDROID: Nombre único por fecha para evitar que actualice eventos viejos
     link.download = 'evento_' + anio + mes + dia + '.ics';
-    
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
