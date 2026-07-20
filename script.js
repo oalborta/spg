@@ -142,12 +142,16 @@ function clasificarEventos(eventos) {
             '</div>' +
             '<div class="col-logo">' + logoTorneo + '</div>';
 
-        var btn = document.createElement('button');
-        btn.className = 'btn-recordar';
-        btn.innerText = 'Recordar';
-        btn.onclick = function() {
-            descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
-        };
+        // Ocultar botón si está en vivo
+        if (!estaEnVivo) {
+            var btn = document.createElement('button');
+            btn.className = 'btn-recordar';
+            btn.innerText = 'Recordar';
+            btn.onclick = function() {
+                descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
+            };
+            div.appendChild(btn);
+        }
         div.appendChild(btn);
 
         if (esHoy) {
