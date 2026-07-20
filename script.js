@@ -142,7 +142,7 @@ function clasificarEventos(eventos) {
             '</div>' +
             '<div class="col-logo">' + logoTorneo + '</div>';
 
-        // Ocultar botón si está en vivo
+        // ✅ FIX: Solo creamos y agregamos el botón si NO está en vivo
         if (!estaEnVivo) {
             var btn = document.createElement('button');
             btn.className = 'btn-recordar';
@@ -152,7 +152,6 @@ function clasificarEventos(eventos) {
             };
             div.appendChild(btn);
         }
-        div.appendChild(btn);
 
         if (esHoy) {
             if (estaEnVivo) {
@@ -180,38 +179,35 @@ function clasificarEventos(eventos) {
     });
 }
 
+// ✅ FIX: La versión de la agenda que a ti SÍ te funcionó en Android
 function descargarRecordatorio(evento, fecha, hora) {
     var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
+    
+    fecha = fecha.trim();
+    hora = hora.trim();
 
     var partesFecha = fecha.split('-');
     var partesHora = hora.split(':');
 
-    var anio = partesFecha[0];
-    // Forzamos a que siempre tengan 2 dígitos (ej: "8" se vuelve "08")
-    var mes = partesFecha[1].padStart(2, '0');
-    var dia = partesFecha[2].padStart(2, '0');
-    var h = partesHora[0].padStart(2, '0'); // Aquí estaba el bug
-    var m = partesHora[1].padStart(2, '0');
+    var anio = parseInt(partesFecha[0]);
+    var mes = parseInt(partesFecha[1]) - 1; 
+    var dia = parseInt(partesFecha[2]);
+    var h = parseInt(partesHora[0]);
+    var m = parseInt(partesHora[1]);
 
-    var inicioStr = anio + mes + dia + 'T' + h + m + '00';
+    var fechaLocal = new Date(anio, mes, dia, h, m, 0);
+    var fechaFinLocal = new Date(anio, mes, dia, h + 1, m, 0);
 
-    // Duración de 1 hora
-    var finDate = new Date(parseInt(anio), parseInt(mes) - 1, parseInt(dia), parseInt(h) + 1, parseInt(m), 0);
-    var anioF = String(finDate.getFullYear());
-    var mesF = String(finDate.getMonth() + 1).padStart(2, '0');
-    var diaF = String(finDate.getDate()).padStart(2, '0');
-    var hF = String(finDate.getHours()).padStart(2, '0');
-    var mF = String(finDate.getMinutes()).padStart(2, '0');
-    var finStr = anioF + mesF + diaF + 'T' + hF + mF + '00';
+    var inicioUTC = fechaLocal.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    var finUTC = fechaFinLocal.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
-    // Formato súper estricto que le encanta a Android y a iPhone
     var salto = '\r\n';
     var ics = 'BEGIN:VCALENDAR' + salto + 
               'VERSION:2.0' + salto + 
               'PRODID:-//Programacion Deportiva//ES' + salto + 
               'BEGIN:VEVENT' + salto + 
-              'DTSTART:' + inicioStr + salto + 
-              'DTEND:' + finStr + salto + 
+              'DTSTART:' + inicioUTC + salto + 
+              'DTEND:' + finUTC + salto + 
               'SUMMARY:' + eventoLimpio + salto + 
               'END:VEVENT' + salto + 
               'END:VCALENDAR';
@@ -219,7 +215,7 @@ function descargarRecordatorio(evento, fecha, hora) {
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'evento_' + anio + mes + dia + '.ics';
+    link.download = 'recordatorio_' + anio + mes + dia + '.ics';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
