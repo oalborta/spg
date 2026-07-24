@@ -18,6 +18,7 @@ var logosTorneo = {
     "TOUR DE FRANCE": "https://github.com/oalborta/spg/blob/main/tdf.png?raw=true",
     "BRASILEIRAO": "https://github.com/oalborta/spg/blob/main/brasileirao.png?raw=true",
     "SUDAMERICANA": "https://github.com/oalborta/spg/blob/main/sudamericana.png?raw=true",
+    "LPF ARGENTINA": "https://github.com/oalborta/spg/blob/main/Liga_Argentina_2026.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
