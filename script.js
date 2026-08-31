@@ -22,6 +22,10 @@ var logosTorneo = {
     "BRASILEIRAO": "https://github.com/oalborta/spg/blob/main/brasileirao.png?raw=true",
     "SUDAMERICANA": "https://github.com/oalborta/spg/blob/main/sudamericana.png?raw=true",
     "LPF ARGENTINA": "https://github.com/oalborta/spg/blob/main/Liga_Argentina_2026.png?raw=true",
+    "LA LIGA": "https://github.com/oalborta/spg/blob/main/LaLiga.png?raw=true",
+    "Liga Portugal": "https://github.com/oalborta/spg/blob/main/LigaPortugal.png?raw=true",
+    "COPA ARGENTINA": "https://github.com/oalborta/spg/blob/main/copa_argentina.png?raw=true",
+    "COPA BRASIL": "https://github.com/oalborta/spg/blob/main/copa_brasil.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
