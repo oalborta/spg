@@ -9,6 +9,8 @@ var logos = {
     "ESPN 6": "https://github.com/oalborta/spg/blob/main/espn6.png?raw=true",
     "ESPN 7": "https://github.com/oalborta/spg/blob/main/espn7.png?raw=true",
     "TS 1": "https://github.com/oalborta/spg/blob/main/ts1.png?raw=true",
+    "D SPORTS": "https://github.com/oalborta/spg/blob/main/DSPORTS.png?raw=true",
+    "D SPORTS 2": "https://github.com/oalborta/spg/blob/main/DSPORTS2.png?raw=true",
     "TS 2": "https://github.com/oalborta/spg/blob/main/ts2.png?raw=true"
 };
 
