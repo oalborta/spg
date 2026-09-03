@@ -26,6 +26,7 @@ var logosTorneo = {
     "Liga Portugal": "https://github.com/oalborta/spg/blob/main/LigaPortugal.png?raw=true",
     "COPA ARGENTINA": "https://github.com/oalborta/spg/blob/main/copa_argentina.png?raw=true",
     "COPA BRASIL": "https://github.com/oalborta/spg/blob/main/copa_brasil.png?raw=true",
+    "COPA MUNDIAL FEMENINA - SUB 20": "https://github.com/oalborta/spg/blob/main/Copa_femenina_sub20.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
