@@ -27,6 +27,12 @@ var logosTorneo = {
     "COPA ARGENTINA": "https://github.com/oalborta/spg/blob/main/copa_argentina.png?raw=true",
     "COPA BRASIL": "https://github.com/oalborta/spg/blob/main/copa_brasil.png?raw=true",
     "COPA MUNDIAL FEMENINA - SUB 20": "https://github.com/oalborta/spg/blob/main/femsub20.png?raw=true",
+    "PREMIER LEAGUE": "https://github.com/oalborta/spg/blob/main/premier.png?raw=true",
+    "US OPEN": "https://github.com/oalborta/spg/blob/main/usopne.png?raw=true",
+    "CONMEBOL LIBERTADORES": "https://github.com/oalborta/spg/blob/main/libertadores.png?raw=true",
+    "BUNDESLIGA": "https://github.com/oalborta/spg/blob/main/bundes.png?raw=true",
+    "SERIE A": "https://github.com/oalborta/spg/blob/main/serieaitalia.png?raw=true",
+    "UEFA CHAMPIONS LEAGUE": "https://github.com/oalborta/spg/blob/main/champions.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
