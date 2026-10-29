@@ -40,6 +40,7 @@ var logosTorneo = {
     "EFL CHAMPIONSHIP": "https://github.com/oalborta/spg/blob/main/EFL-Championship-v2016.png?raw=true",
     "LIGUE 1": "https://github.com/oalborta/spg/blob/main/Ligue_1.png?raw=true",
     "ATP 500": "https://github.com/oalborta/spg/blob/main/atp500.png?raw=true",
+    "PRIMERA NACIONAL": "https://github.com/oalborta/spg/blob/main/primera.nacional.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
