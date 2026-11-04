@@ -42,6 +42,7 @@ var logosTorneo = {
     "ATP 500": "https://github.com/oalborta/spg/blob/main/atp500.png?raw=true",
     "PRIMERA NACIONAL": "https://github.com/oalborta/spg/blob/main/primera_nacional.png?raw=true",
     "LIGA NACIONAL DE BÁSQUET": "https://github.com/oalborta/spg/blob/main/Logo_LNB.png?raw=true",
+    "UEFA EUROPA LEAGUE": "https://github.com/oalborta/spg/blob/main/uefa_europa_league.png?raw=true"
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
